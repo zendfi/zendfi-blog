@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #000000;
+    --accent: oklch(0.6 0.15 290);
+    --header-bg: rgba(255 255 255 / 0.85);
+    --footer-bg: rgba(255 255 255 / 0.85);
+    --text-primary: #000000;
+    --text-secondary: #4b4b63;
+    --text-muted: #6b7280;
+    --border-color: #e9e6ef;
+  }
+
+  html.dark {
+    /* Dark background that blends with the lilac accent instead of pure black */
+    --background: oklch(0.08 0.06 290);
+    --foreground: oklch(0.95 0.02 290);
+    --accent: oklch(0.38 0.12 290);
+    --header-bg: color-mix(in srgb, var(--background) 70%, rgba(10,10,12,0.6));
+    --footer-bg: color-mix(in srgb, var(--background) 70%, rgba(10,10,12,0.6));
+    --text-primary: oklch(0.95 0.02 290);
+    --text-secondary: #d1d3e8;
+    --text-muted: #9ca3af;
+    --border-color: color-mix(in srgb, var(--background) 60%, #2f2a3a);
+  }
+
+  html {
+    @apply h-full;
+    font-size: 95%;
+  }
+  
+  body {
+    @apply h-full;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Inter, sans-serif, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  }
+
+  /* Ensure proper text colors in both modes */
+  .text-gray-400 {
+    color: var(--text-muted);
+  }
+  
+  .text-gray-500 {
+    color: var(--text-secondary);
+  }
+  
+  .text-gray-300 {
+    color: var(--text-secondary);
+  }
+  
+  .text-gray-200 {
+    color: var(--text-primary);
+  }
+  
+  .border-gray-800 {
+    border-color: var(--border-color);
+  }
+  
+  .border-gray-600 {
+    border-color: var(--border-color);
+  }
+
+  /* Accent utilities */
+  .accent-bg {
+    background: var(--accent);
+    color: white;
+  }
+
+  .accent-link {
+    color: var(--accent);
+  }
+
+  .accent-link:hover {
+    filter: brightness(1.05);
+  }
+}
