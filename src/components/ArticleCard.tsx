@@ -32,12 +32,13 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   const { theme } = useTheme();
   
   return (
-    <article className={`border-b pb-6 sm:pb-8 ${
+    <article className={`pb-6 sm:pb-8 ${
       theme === 'dark' ? 'border-gray-800' : 'border-gray-200'
     }`}>
       <div className={`flex items-center text-sm sm:text-base mb-2 ${
         theme === 'dark' ? 'text-gray-500' : 'text-gray-600'
       }`}>
+        <p>{article.author}</p> <span className='text-xs  p-2'>●</span>
         <time>{formatDate(article.date)}</time>
         {article.category && (
           <span className={`ml-4 px-2 py-0.5 rounded text-xs sm:text-sm ${
@@ -85,8 +86,8 @@ export default function ArticleCard({ article }: ArticleCardProps) {
       
       <Link 
         href={`/article/${article.slug}`}
-        className={`inline-flex items-center text-sm sm:text-base transition-colors group filter hue-rotate-[1deg] brightness-110`} 
-        style={{ color: 'var(--accent)' }}
+        className={`inline-flex items-center text-sm sm:text-base transition-colors group text-[var(--accent)]`} 
+        // style={{ color: 'var(--accent)' }}
       >
         READ MORE 
         <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>

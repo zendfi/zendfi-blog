@@ -19,7 +19,7 @@
     /* Dark background that blends with the lilac accent instead of pure black */
     --background: oklch(0.08 0.06 290);
     --foreground: oklch(0.95 0.02 290);
-    --accent: oklch(0.38 0.12 290);
+    --accent: oklch(54.844% 0.19811 288.229);
     --header-bg: color-mix(in srgb, var(--background) 70%, rgba(10,10,12,0.6));
     --footer-bg: color-mix(in srgb, var(--background) 70%, rgba(10,10,12,0.6));
     --text-primary: oklch(0.95 0.02 290);

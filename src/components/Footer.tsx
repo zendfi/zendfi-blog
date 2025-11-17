@@ -8,7 +8,7 @@ export default function Footer() {
   const { theme } = useTheme();
 
   return (
-    <footer className={`w-full backdrop-blur-md py-4 sm:py-6 px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mt-12`} style={{ background: 'var(--footer-bg)', borderTopColor: 'var(--border-color)' }}>
+    <footer className={`w-full max-w-[70rem] mx-auto backdrop-blur-md py-4 sm:py-6 px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mt-12`} style={{ background: 'var(--footer-bg)', borderTopColor: 'var(--border-color)' }}>
       {/* Logo */}
       <div className="flex items-center space-x-2 order-1 md:order-none">
          <Link href="/" className="flex items-center">

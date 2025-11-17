@@ -64,6 +64,7 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
       <div className="mb-8">
         <div className={`flex items-center text-sm mb-4 ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'
           }`}>
+            <p>{article.author}</p> <span className='text-xs p-2'>●</span>
           <time>{formatDate(article.date)}</time>
         </div>
 
@@ -84,9 +85,8 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
         }`}>
         <Link
           href="/"
-          className={`inline-flex items-center transition-colors group ${theme === 'dark' ? 'text-gray-300 hover:text-white' : 'text-accent hover:text-accent'
+          className={`inline-flex items-center transition-colors group ${theme === 'dark' ? 'text-[var(--accent)] hover:text-white' : 'text-accent hover:text-accent'
             }`}
-          style={{ color: 'var(--accent)' }}
 
         >
           <span className="mr-2 group-hover:-translate-x-1 transition-transform">←</span>
