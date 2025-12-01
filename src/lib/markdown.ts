@@ -7,6 +7,8 @@ import rehypeStringify from 'rehype-stringify'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
+import remarkGfm from 'remark-gfm'
+import rehypePrettyCode from 'rehype-pretty-code'
 
 const articlesDirectory = path.join(process.cwd(), 'articles')
 
@@ -54,8 +56,13 @@ export function getArticleBySlug(slug: string): Article | null {
     const processedContent = unified()
       .use(remarkParse)
       .use(remarkMath)
+      .use(remarkGfm)
       .use(remarkRehype)
       .use(rehypeKatex)
+      .use(rehypePrettyCode, {
+        theme: 'github-dark-dimmed',
+        keepBackground: true,
+      })
       .use(rehypeStringify)
       .processSync(content)
       .toString()
