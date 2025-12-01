@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import 'katex/dist/katex.min.css'
@@ -10,6 +10,10 @@ import Script from "next/script";
 
 const inter = Inter({ subsets: ['latin'] })
 
+export const viewport: Viewport = {
+  themeColor: '#000000',
+}
+
 export const metadata: Metadata = {
   title: {
     default: 'Zendfi Blog',
@@ -20,7 +24,6 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://blog.zendfi.tech'),
 
   manifest: '/manifest.json',
-  themeColor: '#000000',
 
   icons: {
     icon: [

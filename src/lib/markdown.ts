@@ -47,13 +47,13 @@ export function getAllArticles(): Omit<Article, 'content'>[] {
   return allArticles.sort((a, b) => (a.date < b.date ? 1 : -1))
 }
 
-export function getArticleBySlug(slug: string): Article | null {
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
     const fullPath = path.join(articlesDirectory, `${slug}.md`)
     const fileContents = fs.readFileSync(fullPath, 'utf8')
     const { data, content } = matter(fileContents)
 
-    const processedContent = unified()
+    const processedContent = await unified()
       .use(remarkParse)
       .use(remarkMath)
       .use(remarkGfm)
@@ -64,8 +64,7 @@ export function getArticleBySlug(slug: string): Article | null {
         keepBackground: true,
       })
       .use(rehypeStringify)
-      .processSync(content)
-      .toString()
+      .process(content)
 
     return {
       slug,
@@ -73,9 +72,10 @@ export function getArticleBySlug(slug: string): Article | null {
       author: data.author,
       date: data.date,
       description: data.description,
-      content: processedContent,
+      content: processedContent.toString(),
     }
-  } catch {
+  } catch (error) {
+    console.error(`Error loading article ${slug}:`, error)
     return null
   }
 }
