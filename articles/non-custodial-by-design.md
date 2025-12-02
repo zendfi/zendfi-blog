@@ -1,7 +1,7 @@
 ---
 title: "Non-Custodial by Design"
 author: "Blessed Tosin-Oyinbo"
-date: "2025-11-17"
+date: "2025-09-1"
 description: "How We Made Our AgentPay Protocol Mathematically Unable to Steal Funds"
 tags: ["agentic-ai", "blockchain", "infrastructure", "research", "solana"]
 category: "Research"
