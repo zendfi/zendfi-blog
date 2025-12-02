@@ -1,12 +1,12 @@
-```yaml
+---
 title: "Why We Chose Rust (And You Should Too)"
 author: "The ZendFi Team"
-date: "2025-08-28"
+date: "2025-09-1"
 description: "The story of how Rust became the foundation of ZendFi, and why we'd make the same choice again."
 tags: ["engineering", "rust", "architecture", "performance"]
 category: "Dev Knowledge"
 image: ""
-```
+---
 
 ## The Decision Point
 
