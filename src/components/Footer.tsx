@@ -30,7 +30,7 @@ export default function Footer() {
       </div>
       {/* Socials */}
       <div className="flex items-center space-x-2 order-3 sm:order-none">
-        <a href="https://x.com/zendfi" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+        <a href="https://x.com/zendfi_" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
           <svg className={`w-4 h-4 sm:w-5 sm:h-5 transition ${
             theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
           }`} fill="currentColor" viewBox="0 0 24 24">
