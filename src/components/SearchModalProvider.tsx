@@ -165,8 +165,7 @@ export default function SearchModalProvider({
                 The ZendFi Journal
               </h1>
               <p className="text-base sm:text-lg md:text-xl text-gray-500 leading-relaxed">
-                Insights on secure, global crypto payments, Solana settlement,
-                MPC cryptography, and developer-first payment rails.
+                Check out the latest updates and research from Team ZendFi! 
               </p>
             </div>
           </section>

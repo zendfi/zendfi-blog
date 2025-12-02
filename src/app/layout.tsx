@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: '%s | Zendfi'
   },
   description:
-    'Zendfi Blog: Insights into crypto payments infrastructure built on Solana...',
+    'Zendfi Blog: Checkout the latest updates and research from Team ZendFi!',
   metadataBase: new URL('https://blog.zendfi.tech'),
 
   manifest: '/manifest.json',
