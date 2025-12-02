@@ -82,7 +82,7 @@ export default function SearchModalProvider({
       <Header onOpenFilterModal={() => setModalOpen(true)} />
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-center items-start pt-12 bg-black/60 backdrop-blur-xl">
+        <div className="fixed inset-0 z-50 flex justify-center items-start pt-4 sm:pt-12 px-4 bg-black/60 backdrop-blur-xl">
           {/* Modal Container */}
           <div
             ref={modalRef}
@@ -156,15 +156,15 @@ export default function SearchModalProvider({
       )}
 
       {/* Main Layout */}
-      <main className="flex-1 max-w-[70rem] mx-auto px-6">
+      <main className="flex-1 w-full max-w-[70rem] mx-auto px-4 sm:px-6">
         {/* Landing Section */}
         {isHome && (
-          <section className="py-8 sm:py-12">
+          <section className="py-6 sm:py-12">
             <div className="max-w-3xl">
-              <h1 className="text-5xl sm:text-6xl font-extrabold mb-4 text-foreground">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 text-foreground">
                 The ZendFi Journal
               </h1>
-              <p className="text-lg sm:text-xl text-gray-500 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-500 leading-relaxed">
                 Insights on secure, global crypto payments, Solana settlement,
                 MPC cryptography, and developer-first payment rails.
               </p>

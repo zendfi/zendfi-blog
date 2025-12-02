@@ -31,12 +31,14 @@
   html {
     @apply h-full;
     font-size: 95%;
+    overflow-x: hidden;
   }
   
   body {
     @apply h-full;
     background: var(--background);
     color: var(--foreground);
+    overflow-x: hidden;
     font-family: Inter, sans-serif, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
 
@@ -77,5 +79,29 @@
 
   .accent-link:hover {
     filter: brightness(1.05);
+  }
+
+  /* Ensure code blocks don't overflow on mobile */
+  pre {
+    @apply overflow-x-auto max-w-full;
+  }
+
+  pre code {
+    @apply text-sm;
+  }
+
+  /* Prose code block overflow fix */
+  .prose pre {
+    @apply overflow-x-auto;
+    max-width: 100%;
+  }
+
+  .prose code {
+    @apply break-words;
+  }
+
+  /* Tables overflow fix */
+  .prose table {
+    @apply block overflow-x-auto;
   }
 }

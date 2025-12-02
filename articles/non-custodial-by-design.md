@@ -20,7 +20,7 @@ Basically almost every crypto payment processor says the same thing: *"Your keys
 
 But here's the uncomfortable truth: if your payment provider *can* access your keys, they're a honeypot. A single database breach, a rogue employee, or a government subpoena could expose everything.
 
-At ZendFi, we asked a different question: **What if we designed a system where stealing keys was mathematically impossible—even for us?**
+At ZendFi, we asked a different question: **What if we designed a system where stealing keys was mathematically impossible, even for us?**
 
 
 ## The Architecture: Client-Side Encryption
@@ -96,7 +96,7 @@ Why AES-GCM?
 
 ### Layer 3: Device Binding
 
-The encryption salt includes a **device fingerprint**—a stable identifier derived from the device's characteristics:
+The encryption salt includes a **device fingerprint**, a stable identifier derived from the device's characteristics:
 
 ```javascript
 async function getStableDeviceFingerprint() {
@@ -126,10 +126,10 @@ When a user creates a device-bound session key, our database receives:
 
 | Field | Value | Can Backend Use It? |
 |-------|-------|---------------------|
-| `encrypted_key_data` | AES-GCM ciphertext | ❌ No - needs PIN + device |
-| `nonce` | 12-byte random IV | ❌ No - useless without key |
-| `public_key` | Solana public key | ✅ Yes - but it's public anyway |
-| `device_fingerprint` | SHA-256 hash | ❌ No - can't reverse a hash |
+| `encrypted_key_data` | AES-GCM ciphertext | No - needs PIN + device |
+| `nonce` | 12-byte random IV | No - useless without key |
+| `public_key` | Solana public key | Yes - but it's public anyway |
+| `device_fingerprint` | SHA-256 hash | No - can't reverse a hash |
 
 The backend can verify *which* public key a user controls, but it **cannot sign transactions** on their behalf.
 
@@ -179,7 +179,7 @@ The signature happens **entirely on the user's device**. Our backend is just a r
 
 "But wait," you say, "I've seen ZendFi auto-sign transactions for AI agents. How?"
 
-You're right. For **autonomous delegates**, we do sign on behalf of users—but with a crucial difference: the keypair is encrypted with **Lit Protocol**, not just a PIN.
+You're right. For **autonomous delegates**, we do sign on behalf of users, but with a crucial difference: the keypair is encrypted with **Lit Protocol**, not just a PIN.
 
 ```rust
 // User opts into autonomous mode by:
@@ -199,7 +199,7 @@ With Lit Protocol:
 - No single party (including us) holds the full decryption key
 - Access conditions are cryptographically enforced
 
-It's "trust-minimized" rather than "trustless"—but the trust is distributed across a decentralized network, not concentrated in our database.
+It's "trust-minimized" rather than "trustless", but the trust is distributed across a decentralized network, not concentrated in our database.
 
 
 ## Real-World Security Properties
@@ -222,7 +222,7 @@ Nothing is free. Here's what we give up for non-custodial security:
 ### 1. No Password Recovery
 If a user forgets their PIN, we cannot help them. The encryption key is derived client-side and never transmitted.
 
-**Mitigation**: We support recovery QR codes that users can back up—but they must do this proactively.
+**Mitigation**: We support recovery QR codes that users can back up, but they must do this proactively.
 
 ### 2. Device Lock-In
 The device fingerprint is part of the key derivation. Switching devices requires re-encrypting the key.
@@ -243,7 +243,7 @@ In 2024, multiple crypto payment processors were hacked, exposing private keys.
 
 The pattern is clear: **custody is the vulnerability**.
 
-At ZendFi, we didn't build a more secure vault. We eliminated the need for a vault entirely. Our backend is not a trusted party—it's a relay that processes encrypted blobs it cannot read.
+At ZendFi, we didn't build a more secure vault. We eliminated the need for a vault entirely. Our backend is not a trusted party, it's a relay that processes encrypted blobs it cannot read.
 
 That's not marketing. That's math.
 

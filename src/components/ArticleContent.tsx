@@ -33,7 +33,7 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
   const { theme } = useTheme();
 
   return (
-    <article className="py-6 sm:py-12 max-w-[70rem] mx-auto">
+    <article className="py-6 sm:py-12 w-full max-w-[70rem] mx-auto overflow-hidden">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -76,7 +76,7 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
       </div>
 
       <div
-        className={`prose prose-sm sm:prose-base md:prose-lg max-w-none ${theme === 'dark' ? 'prose-invert' : 'prose-gray'
+        className={`prose prose-sm sm:prose-base md:prose-lg max-w-none overflow-x-auto ${theme === 'dark' ? 'prose-invert' : 'prose-gray'
           }`}
         dangerouslySetInnerHTML={{ __html: article.content }}
       />

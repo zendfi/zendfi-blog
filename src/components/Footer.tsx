@@ -8,9 +8,9 @@ export default function Footer() {
   const { theme } = useTheme();
 
   return (
-    <footer className={`w-full max-w-[70rem] mx-auto backdrop-blur-md py-4 sm:py-6 px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 mt-12`} style={{ background: 'var(--footer-bg)', borderTopColor: 'var(--border-color)' }}>
+    <footer className={`w-full max-w-[70rem] mx-auto backdrop-blur-md py-4 sm:py-6 px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-2 mt-12`} style={{ background: 'var(--footer-bg)', borderTopColor: 'var(--border-color)' }}>
       {/* Logo */}
-      <div className="flex items-center space-x-2 order-1 md:order-none">
+      <div className="flex items-center space-x-2 order-1 sm:order-none">
          <Link href="/" className="flex items-center">
               <Image
                 src="/images/logo.png"
@@ -23,13 +23,13 @@ export default function Footer() {
             </Link>
       </div>
       {/* Copyright */}
-      <div className={`text-xs sm:text-sm text-center order-2 md:order-none ${
+      <div className={`text-xs sm:text-sm text-center order-2 sm:order-none ${
         theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
       }`}>
         © 2025 Zendfi. All Rights Reserved.
       </div>
       {/* Socials */}
-      <div className="flex items-center space-x-2 order-3 md:order-none">
+      <div className="flex items-center space-x-2 order-3 sm:order-none">
         <a href="https://x.com/zendfi" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
           <svg className={`w-4 h-4 sm:w-5 sm:h-5 transition ${
             theme === 'dark' ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'

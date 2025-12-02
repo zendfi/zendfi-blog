@@ -19,7 +19,7 @@ export default function Header({ onOpenFilterModal }: { onOpenFilterModal?: () =
   return (
     <header className={`sticky top-0 z-50 backdrop-blur-md mb-8`} style={{ background: 'var(--header-bg)' }}>
       {/* <div className="max-w-4xl mx-auto px-6 py-6 flex items-center justify-between"> */}
-      <div className="max-w-[70rem] mx-auto px-6 py-6 flex items-center justify-between">
+      <div className="max-w-[70rem] mx-auto px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between">
      
              <Link href="/" className="flex items-center">
               <Image
