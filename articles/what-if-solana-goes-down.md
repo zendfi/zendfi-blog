@@ -1,5 +1,5 @@
 ---
-title: ""But What If Solana Goes Down?" (And Other Misconceptions)"
+title: "But What If Solana Goes Down? (And Other Misconceptions)"
 author: "The ZendFi Team"
 date: "2025-10-1"
 description: "Let's be honest, we're probably all wondering right? Well, let's dig in!"
