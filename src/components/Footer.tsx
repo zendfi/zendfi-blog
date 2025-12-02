@@ -15,9 +15,9 @@ export default function Footer() {
               <Image
                 src="/images/logo.png"
                 alt="Zendfi Logo"
-                width={120}
-                height={32}
-                className="h-8 w-auto filter hue-rotate-[19deg] brightness-110"
+                width={100}
+                height={28}
+                className="h-5 sm:h-6 w-auto filter hue-rotate-[19deg] brightness-110"
                 priority
               />
             </Link>
