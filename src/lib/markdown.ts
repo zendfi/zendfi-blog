@@ -18,6 +18,9 @@ export interface Article {
   author: string
   date: string
   description: string
+  tags?: string[]
+  category?: string
+  image?: string
   content: string
 }
 
@@ -41,6 +44,9 @@ export function getAllArticles(): Omit<Article, 'content'>[] {
         author: data.author,
         date: data.date,
         description: data.description,
+        tags: data.tags,
+        category: data.category,
+        image: data.image || undefined,
       }
     })
 
@@ -72,6 +78,9 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
       author: data.author,
       date: data.date,
       description: data.description,
+      tags: data.tags,
+      category: data.category,
+      image: data.image || undefined,
       content: processedContent.toString(),
     }
   } catch (error) {

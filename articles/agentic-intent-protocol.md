@@ -5,7 +5,7 @@ date: "2025-09-15"
 description: "Solving the Agent Autonomy Trilemma with Threshold Cryptography"
 tags: ["agentic-ai", "cryptography", "infrastructure", "research", "solana"]
 category: "Research"
-image: ""
+image: "/images/ai-agent-payment-process.png"
 ---
 
 
@@ -39,13 +39,11 @@ Traditional approaches sacrifice one:
 | **AIP (Interactive)** | LIMITED | MAXIMUM | HIGH | Device-bound, user signs |
 | **AIP (Autonomous)** | HIGH | HIGH | HIGH* | Threshold cryptography |
 
-```
-*  = Distributed non-custody (requires compromising TWO independent systems)
-```
+*= Distributed non-custody (requires compromising TWO independent systems)
 
-**Our contribution**: The Agentic Intent Protocol achieves all three through threshold cryptography.
 
----
+The Agentic Intent Protocol achieves all three through threshold cryptography.
+
 
 ## The Breakthrough: Distributed Non-Custody
 
@@ -119,7 +117,7 @@ User creates a **device-bound session key** encrypted with their password. Backe
 
 ```
 Security:     ████████████ (Maximum - pure non-custodial)
-Autonomy:     ██░░░░░░░░░░ (Limited - requires user for each tx)
+Autonomy:     ██░░░░░░░░░░ (Limited - requires user's client (browser) for each tx)
 Use case:     High-value transactions, security-conscious users
 ```
 

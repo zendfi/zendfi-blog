@@ -1,5 +1,6 @@
 "use client";
 import Link from 'next/link'
+import Image from 'next/image'
 import { useTheme } from '@/components/ThemeContext'
 import MarkdownContent from '@/components/MarkdownContent'
 
@@ -75,6 +76,21 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
 
         {/* Author name and avatar removed from article header */}
       </div>
+
+      {/* Hero Image */}
+      {article.image && (
+        <div className="mb-8 -mx-4 sm:mx-0">
+          <Image
+            src={article.image}
+            alt={article.title}
+            width={1200}
+            height={630}
+            className="w-full h-auto rounded-none sm:rounded-lg object-cover"
+            priority
+            unoptimized
+          />
+        </div>
+      )}
 
       <MarkdownContent
         content={article.content}
