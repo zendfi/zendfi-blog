@@ -93,8 +93,8 @@ export default function ArticleCard({ article }: ArticleCardProps) {
               <Image 
                 src={article.image} 
                 alt={article.title} 
-                width={400} 
-                height={250} 
+                width={500} 
+                height={350} 
                 className="w-full h-48 md:h-52 lg:h-56 object-cover hover:scale-105 transition-transform duration-300" 
                 unoptimized
               />
