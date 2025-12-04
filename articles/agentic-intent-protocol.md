@@ -23,23 +23,7 @@ The core insight: **autonomy doesn't require custody**. By separating key storag
 
 Every payment system for AI agents must choose between three properties:
 
-```
-                    AUTONOMY
-                       △
-                      /│\
-                     / │ \
-                    /  │  \
-                   /   │   \
-                  /    │    \
-                 /     │     \
-                /      │      \
-               /       │       \
-              /        │        \
-             ▽─────────┼─────────▽
-         SECURITY      │      NON-CUSTODY
-                       │
-        Traditional systems pick only two
-```
+![The Agent Autonomy Trilemma](/images/autonomy-trilemma.png)
 
 **Autonomy**: Agent can execute transactions without human intervention  
 **Security**: Bounded spending, revocable permissions, audit trails  
@@ -87,63 +71,7 @@ Lit Protocol is the only production-ready threshold cryptography network that me
 
 Building our own threshold network would require years of cryptographic engineering and wouldn't achieve the same trust properties—we'd just be another single point of failure.
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    DISTRIBUTED NON-CUSTODY MODEL                        │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│   User's Device              ZendFi Backend           Lit Protocol      │
-│   ────────────               ──────────────           ────────────      │
-│                                                                         │
-│   ┌─────────────┐                                    ┌──────────────┐   │
-│   │ Generate    │                                    │  Lit Node 1  │   │
-│   │ Keypair     │──── Threshold Encrypt ────────────▶│  (shard 1)   │   │
-│   └─────────────┘                                    └──────────────┘   │
-│         │                                                    │          │
-│         │                                            ┌──────────────┐   │
-│         │                                            │  Lit Node 2  │   │
-│         │                                            │  (shard 2)   │   │
-│         │                                            └──────────────┘   │
-│         │                                                    │          │
-│         │                                            ┌──────────────┐   │
-│         │                                            │  Lit Node N  │   │
-│         │                                            │  (shard n)   │   │
-│         │                                            └──────────────┘   │
-│         │                                                    │          │
-│         │              ┌─────────────────┐                   │          │
-│         │              │                 │                   │          │
-│         └─────────────▶│  Stores ONLY:   │◀──────────────────┘          │
-│    Delegation          │  • Ciphertext   │     Nodes verify             │
-│    Signature           │  • Data hash    │     conditions,              │
-│                        │  • Public key   │     release shards           │
-│                        │                 │                              │
-│                        │  CANNOT decrypt │                              │
-│                        │  without Lit    │                              │
-│                        └────────┬────────┘                              │
-│                                 │                                       │
-│                                 │ When payment requested:               │
-│                                 │                                       │
-│                                 ▼                                       │
-│                        ┌─────────────────┐                              │
-│                        │ Request decrypt │                              │
-│                        │ from Lit nodes  │                              │
-│                        │                 │                              │
-│                        │ Nodes verify:   │                              │
-│                        │ • EVM condition │                              │
-│                        │ • Session sigs  │                              │
-│                        └────────┬────────┘                              │
-│                                 │                                       │
-│                                 ▼                                       │
-│                        ┌─────────────────┐                              │
-│                        │ Key assembled   │                              │
-│                        │ IN MEMORY ONLY  │                              │
-│                        │                 │                              │
-│                        │ Sign tx → Send  │                              │
-│                        │ Discard key     │                              │
-│                        └─────────────────┘                              │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Distributed Non-Custody Model](/images/distrubuted-non-custody-model.png)
 
 ### Why This Solves the Trilemma
 
@@ -307,35 +235,7 @@ The delegation signature **proves** the user possessed the session key at delega
 
 When an AI agent requests a payment:
 
-```
-Agent                   ZendFi                    Lit Protocol              Solana
-  │                        │                            │                      │
-  │ POST /smart-payment    │                            │                      │
-  │───────────────────────▶│                            │                      │
-  │                        │                            │                      │
-  │                        │ Check spending limits      │                      │
-  │                        │ (programmatic - DB query)  │                      │
-  │                        │                            │                      │
-  │                        │ Request decryption         │                      │
-  │                        │───────────────────────────▶│                      │
-  │                        │                            │                      │
-  │                        │                            │ Verify EVM conditions│
-  │                        │                            │ Threshold consensus  │
-  │                        │                            │                      │
-  │                        │◀───────────────────────────│                      │
-  │                        │ Decrypted keypair          │                      │
-  │                        │ (in memory only)           │                      │
-  │                        │                            │                      │
-  │                        │ Sign transaction           │                      │
-  │                        │ Discard keypair            │                      │
-  │                        │                            │                      │
-  │                        │ Submit signed tx           │                      │
-  │                        │────────────────────────────│─────────────────────▶│
-  │                        │                            │                      │
-  │                        │◀───────────────────────────│──────────────────────│
-  │◀───────────────────────│ Confirmation (400ms)       │                      │
-  │ Payment confirmed      │                            │                      │
-```
+![AI Agent Payment Process](/images/ai-agent-payment-process.png)
 
 ---
 
@@ -365,33 +265,15 @@ These rely on ZendFi's backend behaving correctly:
 
 ### The Trust Model
 
-```
-┌────────────────────────────────────────────────────────────────────┐
-│                         THREAT SCENARIOS                           │
-├────────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  Scenario: ZendFi backend compromised                              │
-│  ─────────────────────────────────────                             │
-│  Device-bound keys: SAFE (attacker gets only ciphertext)           │
-│  Lit-delegated keys: SAFE (attacker needs Lit consensus too)       │
-│  Programmatic limits: AT RISK (attacker could bypass DB checks)    │
-│                                                                    │
-│  Scenario: Lit Protocol network compromised                        │
-│  ──────────────────────────────────────────                        │
-│  Device-bound keys: SAFE (Lit not involved)                        │
-│  Lit-delegated keys: AT RISK (but attacker also needs ZendFi)      │
-│                                                                    │
-│  Scenario: Both ZendFi AND Lit compromised                         │
-│  ─────────────────────────────────────────                         │
-│  Device-bound keys: SAFE (neither can decrypt)                     │
-│  Lit-delegated keys: AT RISK (full key access possible)            │
-│                                                                    │
-│  Scenario: User's device compromised                               │
-│  ─────────────────────────────────────                             │
-│  All keys: AT RISK (attacker has password + encrypted key)         │
-│                                                                    │
-└────────────────────────────────────────────────────────────────────┘
-```
+### Threat Scenarios
+
+**If ZendFi's backend is compromised**, device-bound keys remain safe since an attacker would only obtain ciphertext they cannot decrypt. Lit-delegated keys are also protected because the attacker would still need to achieve consensus from Lit Protocol's distributed nodes. However, programmatic limits (spending caps, time bounds) would be at risk since an attacker with database access could bypass these checks.
+
+**If Lit Protocol's network is compromised**, device-bound keys remain completely safe since Lit is not involved in their encryption. Lit-delegated keys would be at risk, but an attacker would still need simultaneous access to ZendFi's backend to actually use them.
+
+**If both ZendFi and Lit Protocol are compromised simultaneously**, device-bound keys still remain safe—neither system can decrypt them since only the user's password can. Lit-delegated keys, however, would be fully at risk in this scenario, as the attacker would have access to both systems required for decryption.
+
+**If a user's device is compromised**, all keys associated with that device are at risk regardless of mode, since the attacker would have access to both the encrypted key material and the ability to capture the user's password.
 
 The key insight: **Autonomous delegation requires compromising TWO independent systems**. This is strictly better than custodial (one system) while enabling full autonomy.
 
