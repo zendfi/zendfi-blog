@@ -88,14 +88,14 @@ export default function ArticleCard({ article }: ArticleCardProps) {
 
         {/* Image - Right Side */}
         {article.image && (
-          <div className="mt-4 md:mt-0 md:order-2 md:w-80 lg:w-96 flex-shrink-0 overflow-hidden rounded-lg">
+          <div className="mt-4 md:mt-0 md:order-2 md:w-[320px] lg:w-[400px] xl:w-[450px] flex-shrink-0 overflow-hidden rounded-lg">
             <Link href={`/article/${article.slug}`}>
               <Image 
                 src={article.image} 
                 alt={article.title} 
-                width={500} 
-                height={350} 
-                className="w-full h-48 md:h-52 lg:h-56 object-cover hover:scale-105 transition-transform duration-300" 
+                width={450} 
+                height={280} 
+                className="w-full h-48 md:h-56 lg:h-64 object-cover hover:scale-105 transition-transform duration-300" 
                 unoptimized
               />
             </Link>
