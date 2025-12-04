@@ -1,6 +1,7 @@
 "use client";
 import Link from 'next/link'
 import { useTheme } from '@/components/ThemeContext'
+import MarkdownContent from '@/components/MarkdownContent'
 
 // Define formatDate directly in this component
 function formatDate(dateString: string): string {
@@ -75,10 +76,10 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
         {/* Author name and avatar removed from article header */}
       </div>
 
-      <div
+      <MarkdownContent
+        content={article.content}
         className={`prose prose-sm sm:prose-base md:prose-lg max-w-none overflow-x-auto ${theme === 'dark' ? 'prose-invert' : 'prose-gray'
           }`}
-        dangerouslySetInnerHTML={{ __html: article.content }}
       />
 
       <div className={`mt-12 pt-8 border-t ${theme === 'dark' ? 'border-gray-800' : 'border-gray-200'

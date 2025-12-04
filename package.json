@@ -12,6 +12,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "date-fns": "^4.1.0",
     "gray-matter": "^4.0.3",
+    "html-react-parser": "^5.2.10",
     "katex": "^0.16.22",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.554.0",
