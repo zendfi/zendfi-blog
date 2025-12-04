@@ -1,8 +1,8 @@
 ---
-title: "Agentic Intent Protocol: Solving the Agent Autonomy Trilemma with Threshold Cryptography"
+title: "Agentic Intent Protocol (AIP-1)"
 author: "Blessed Tosin-Oyinbo"
 date: "2025-09-15"
-description: "How We Made Our AgentPay Protocol Mathematically Unable to Steal Funds"
+description: "Solving the Agent Autonomy Trilemma with Threshold Cryptography"
 tags: ["agentic-ai", "cryptography", "infrastructure", "research", "solana"]
 category: "Research"
 image: ""
