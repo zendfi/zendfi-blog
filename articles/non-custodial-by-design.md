@@ -5,7 +5,7 @@ date: "2025-09-1"
 description: "How We Made Our AgentPay Protocol Mathematically Unable to Steal Funds"
 tags: ["agentic-ai", "blockchain", "infrastructure", "research", "solana"]
 category: "Research"
-image: ""
+image: "/images/the-whole-process-with-zendfi.png"
 ---
 
 
@@ -27,20 +27,11 @@ At ZendFi, we asked a different question: **What if we designed a system where s
 
 Here's how basic traditional payment backends work in a nutshell:
 
-```
-User → Generates Keypair → Sends Private Key → Backend Stores It
-                                                    ↓
-                                            Backend Can Use It
-```
+![The Agent Autonomy Trilemma](/images/how-traditional-backends-handle-it.png)
 
 And here's how ZendFi works:
 
-```
-User → Generates Keypair → Encrypts with PIN → Sends Encrypted Blob
-                                                    ↓
-                                        Backend Stores Ciphertext
-                                        Backend CANNOT Decrypt
-```
+![The Agent Autonomy Trilemma](/images/how-zendfi-stores-keypair-info.png)
 
 The critical difference: **the private key never exists in plaintext outside the user's device.**
 
@@ -160,17 +151,7 @@ Great question. If we can't decrypt the keys, how does ZendFi enable Agents proc
 
 Here's the flow for a device-bound payment:
 
-```
-1. AI Agent → "Pay $25 for coffee"
-2. ZendFi Backend → Builds unsigned transaction
-3. Backend → Returns transaction + status: "awaiting_signature"
-4. User's Device → Prompts for PIN
-5. User's Device → Decrypts keypair locally
-6. User's Device → Signs transaction
-7. User's Device → Submits to /api/v1/ai/payments/{id}/submit-signed
-8. ZendFi Backend → Broadcasts to Solana
-9. Payment Confirmed 
-```
+![The Agent Autonomy Trilemma](/images/the-whole-process-with-zendfi.png)
 
 The signature happens **entirely on the user's device**. Our backend is just a relay.
 
