@@ -1,31 +1,18 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import ArticleList, { Article } from "./ArticleList";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "./ThemeContext";
 
-const tags = [
-  "All Tags",
-  "Blockchain",
-  "AI",
-  "Security",
-  "Infrastructure",
-  "Payments",
-  "Solana",
-  "MPC",
-  "Crypto",
-  "API",
-  "DeFi",
-];
 
 const categories = [
   "All Categories",
   "Research",
-  "Development",
-  "Tutorial",
-  "Blog",
+  "Dev Knowledge",
+  "FAQ",
 ];
 
 export default function SearchModalProvider({
@@ -37,14 +24,42 @@ export default function SearchModalProvider({
 }) {
   const [isModalOpen, setModalOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedTag, setSelectedTag] = useState("All Tags");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   const inputRef = useRef<HTMLInputElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const pathname = usePathname();
+  const router = useRouter();
+  const { theme } = useTheme();
   const isHome = pathname === "/";
+
+  // Filter articles based on search query, tags, and categories
+  const filteredArticles = useMemo(() => {
+    if (!articles) {
+      return [];
+    }
+
+    const lowerSearch = search.toLowerCase();
+    return articles.filter((article) => {
+      // Search filter
+      const matchesSearch =
+        !search.trim() ||
+        article.title.toLowerCase().includes(lowerSearch) ||
+        article.description?.toLowerCase().includes(lowerSearch) ||
+        article.tags?.some((tag) => tag.toLowerCase().includes(lowerSearch)) ||
+        article.category?.toLowerCase().includes(lowerSearch);
+
+
+      // Category filter
+      const matchesCategory =
+        selectedCategory === "" ||
+        selectedCategory === "All Categories" ||
+        article.category === selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [articles, search, selectedCategory]);
 
   // Auto-focus input when modal opens
   useEffect(() => {
@@ -72,9 +87,21 @@ export default function SearchModalProvider({
   }, [isModalOpen]);
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && filteredArticles.length > 0) {
+      // Navigate to first result on Enter
+      router.push(`/article/${filteredArticles[0].slug}`);
       setModalOpen(false);
+      setSearch("");
+    } else if (e.key === "Escape") {
+      setModalOpen(false);
+      setSearch("");
     }
+  };
+
+  const handleArticleClick = (slug: string) => {
+    setModalOpen(false);
+    setSearch("");
+    router.push(`/article/${slug}`);
   };
 
   return (
@@ -82,24 +109,41 @@ export default function SearchModalProvider({
       <Header onOpenFilterModal={() => setModalOpen(true)} />
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex justify-center items-start pt-4 sm:pt-12 px-4 bg-black/60 backdrop-blur-xl">
+        <div className={`fixed inset-0 z-50 flex justify-center items-start pt-4 sm:pt-12 px-4 backdrop-blur-xl ${
+          theme === 'dark' ? 'bg-black/60' : 'bg-white/80'
+        }`}>
           {/* Modal Container */}
           <div
             ref={modalRef}
-            className="relative bg-black border border-zinc-800 rounded-2xl w-full max-w-md shadow-xl overflow-hidden animate-in fade-in zoom-in"
+            className={`relative rounded-2xl w-full max-w-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in flex flex-col max-h-[85vh] ${
+              theme === 'dark' 
+                ? 'bg-black border border-zinc-800' 
+                : 'bg-white border border-gray-200'
+            }`}
           >
             {/* Close Button */}
             <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-3xl text-gray-400 hover:text-white"
+              onClick={() => {
+                setModalOpen(false);
+                setSearch("");
+              }}
+              className={`absolute top-4 right-4 z-10 text-3xl transition-colors ${
+                theme === 'dark' 
+                  ? 'text-gray-400 hover:text-white' 
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
             >
               &times;
             </button>
 
             {/* Search Field */}
-            <div className="flex items-center px-4 pt-4 pb-1">
+            <div className={`flex items-center px-4 pt-4 pb-3 border-b ${
+              theme === 'dark' ? 'border-zinc-800' : 'border-gray-200'
+            }`}>
               <svg
-                className="w-5 h-5 text-gray-400 mr-3"
+                className={`w-5 h-5 mr-3 flex-shrink-0 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                }`}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth="2"
@@ -116,40 +160,86 @@ export default function SearchModalProvider({
                 ref={inputRef}
                 type="text"
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
                 placeholder="Search articles..."
-                className="flex-1 bg-transparent text-white placeholder-gray-500 text-base outline-none"
+                className={`flex-1 bg-transparent text-base outline-none ${
+                  theme === 'dark' 
+                    ? 'text-white placeholder-gray-500' 
+                    : 'text-gray-900 placeholder-gray-400'
+                }`}
               />
             </div>
 
-            {/* Filters */}
-            <div className="flex flex-col md:flex-row gap-6 px-6 py-6">
-              {/* Tag Filter */}
-              <select
-                value={selectedTag}
-                onChange={(e) => setSelectedTag(e.target.value)}
-                className="flex-1 bg-zinc-900 text-white px-3 py-2 rounded-lg text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-700"
-              >
-                {tags.map((tag) => (
-                  <option key={tag} value={tag} className="bg-black">
-                    {tag}
-                  </option>
-                ))}
-              </select>
-
-              {/* Category Filter */}
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="flex-1 bg-zinc-900 text-white px-3 py-2 rounded-lg text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-700"
-              >
-                {categories.map((cat) => (
-                  <option key={cat} value={cat} className="bg-black">
-                    {cat}
-                  </option>
-                ))}
-              </select>
+            {/* Search Results */}
+            <div className="flex-1 overflow-y-auto px-4 py-4">
+              {search.trim() ? (
+                filteredArticles.length > 0 ? (
+                  <div className="space-y-3">
+                    {filteredArticles.map((article: Article) => (
+                      <button
+                        key={article.slug}
+                        onClick={() => handleArticleClick(article.slug)}
+                        className={`w-full text-left p-3 rounded-lg border transition-colors group ${
+                          theme === 'dark'
+                            ? 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900/50'
+                            : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                        }`}
+                      >
+                        <h3 className={`font-semibold text-base mb-1 transition-colors ${
+                          theme === 'dark'
+                            ? 'text-white group-hover:text-gray-200'
+                            : 'text-gray-900 group-hover:text-gray-700'
+                        }`}>
+                          {article.title}
+                        </h3>
+                        {article.description && (
+                          <p className={`text-sm line-clamp-2 ${
+                            theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                          }`}>
+                            {article.description}
+                          </p>
+                        )}
+                        <div className={`flex items-center gap-3 mt-2 text-xs ${
+                          theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                        }`}>
+                          <span>{article.author}</span>
+                          {article.category && (
+                            <>
+                              <span>•</span>
+                              <span>{article.category}</span>
+                            </>
+                          )}
+                          {article.tags && article.tags.length > 0 && (
+                            <>
+                              <span>•</span>
+                              <span>{article.tags.join(", ")}</span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className={`text-center py-8 ${
+                    theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                  }`}>
+                    <p className="text-base">No articles found</p>
+                    <p className="text-sm mt-1">Try a different search term</p>
+                  </div>
+                )
+              ) : (
+                <div className={`text-center py-8 ${
+                  theme === 'dark' ? 'text-gray-400' : 'text-gray-500'
+                }`}>
+                  <p className="text-base">Start typing to search articles</p>
+                  {articles && articles.length > 0 && (
+                    <p className="text-sm mt-1">
+                      {articles.length} article{articles.length !== 1 ? "s" : ""} available
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -171,12 +261,39 @@ export default function SearchModalProvider({
           </section>
         )}
 
+        {/* Filters Section */}
+        {isHome && articles && (
+          <section className="py-4 sm:py-6">
+            {/* Category Filters */}
+            <div className={`mb-4 border-b ${
+              theme === 'dark' ? 'border-gray-600' : 'border-gray-200'
+            }`}>
+              <div className="flex gap-2 overflow-x-auto pb-2 pr-4 sm:pr-0 sm:flex-wrap sm:overflow-x-visible sm:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                {categories.map((category) => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-lg text-md uppercase font-medium transition-colors whitespace-nowrap flex-shrink-0 ${
+                      selectedCategory === category
+                        ? "text-[var(--accent)]"
+                        : theme === 'dark' 
+                          ? "text-gray-300" 
+                          : "text-slate-900"
+                    }`}
+                  >
+                    {category}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Content */}
         {isHome && articles ? (
           <ArticleList
             articles={articles}
             search={search}
-            selectedTag={selectedTag}
             selectedCategory={selectedCategory}
           />
         ) : (
