@@ -10,14 +10,14 @@ image: ""
 
 ## The Problem
 
-We built ZendFi's SDK to be simple: `zendfi.createPayment({ amount: 50 })` just works. But as we talked to developers building production apps, we kept hearing the same patterns:
+We built ZendFi's SDK to be simple: `zendfi.createPayment({ amount: 50 })` just works. But as we talked to developers building production apps, especially with our Agentic Payment Protocol, we kept hearing the same patterns:
 
 *"How do I cache session keys without re-prompting for PINs?"*  
 *"What's the best way to handle wallet connections across different providers?"*  
 *"How should I retry failed transactions?"*  
 *"Can I parse natural language into payments for my AI chat bot?"*
 
-These aren't payment problems—they're **integration problems**. And developers were solving them over and over, each in slightly different (often fragile) ways.
+These aren't payment problems, they're **integration problems**. And developers were solving them over and over, each in slightly different (often fragile) ways.
 
 So we built the helper utilities. Not as required SDK features, but as **optional, production-ready patterns** that handle the hard parts.
 
@@ -116,7 +116,7 @@ const sameKeypair = await cache.getCached(sessionKeyId, ...);  // Instant
 
 ### 2. WalletConnector — Universal Solana Wallet Integration
 
-**The Problem:** Phantom uses `window.solana`, Solflare uses `window.solflare`, Backpack uses `window.backpack`. Detecting, connecting, and handling events is different for each.
+**The Problem:** Phantom uses `window.solana`, Solflare uses `window.solflare`, Backpack uses `window.backpack`. Detecting, connecting, and handling events is different for each. You'll most likely face this issue when you're building agentic applications (if you're building regular payments, our checkout page already handles wallet connection behind the scenes).
 
 **The Solution:**
 
@@ -432,8 +432,8 @@ import { DevTools } from '@zendfi/sdk/helpers';
 DevTools.enableDebugMode();
 
 // All API calls now logged:
-// 📤 API Request: POST /api/v1/payments
-// ✅ API Response: 200 OK (234ms)
+// API Request: POST /api/v1/payments
+// API Response: 200 OK (234ms)
 
 // Generate realistic test data
 const testData = DevTools.generateTestData();
@@ -473,68 +473,6 @@ DevTools.logTransactionFlow(paymentId);
 ---
 
 ## Real-World Impact: Before & After
-
-### E-Commerce Checkout
-
-**Before (no helpers):**
-
-```typescript
-// 150+ lines of boilerplate
-let wallet;
-if (window.solana?.isPhantom) {
-  wallet = window.solana;
-  await wallet.connect();
-} else if (window.solflare) {
-  wallet = window.solflare;
-  await wallet.connect();
-} // ... repeat for each wallet
-
-// Manual retry logic
-let attempts = 0;
-while (attempts < 3) {
-  try {
-    const payment = await zendfi.createPayment(...);
-    break;
-  } catch (error) {
-    attempts++;
-    await sleep(1000 * attempts);
-  }
-}
-
-// Manual confirmation polling
-let confirmed = false;
-while (!confirmed) {
-  const status = await connection.getTransaction(signature);
-  if (status) confirmed = true;
-  await sleep(2000);
-}
-```
-
-**After (with helpers):**
-
-```typescript
-// 15 lines, production-ready
-import { 
-  WalletConnector, 
-  RetryStrategy, 
-  TransactionPoller 
-} from '@zendfi/sdk/helpers';
-
-const wallet = await WalletConnector.detectAndConnect();
-
-const payment = await RetryStrategy.withRetry(
-  () => zendfi.createPayment({ amount: cartTotal }),
-  { maxAttempts: 3 }
-);
-
-const poller = new TransactionPoller({ connection });
-await poller.waitForConfirmation(payment.signature);
-```
-
-**Results:**
-- **90% less code**
-- **50% fewer customer support tickets** (wallet connection issues)
-- **Zero timeout-related errors** (smart polling)
 
 ### AI Chat Bot
 
@@ -672,7 +610,7 @@ Developers shouldn't need to read source code to understand helpers. The types s
 
 ## What's Next
 
-We're actively developing:
+We're actively developing and improving our helper module:
 
 **1. Transaction Batching Helper**  
 Combine multiple operations into one transaction (lower fees, atomic execution).
