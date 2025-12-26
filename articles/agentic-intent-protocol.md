@@ -1,7 +1,7 @@
 ---
 title: "Agentic Intent Protocol (AIP-1)"
 author: "Blessed Tosin-Oyinbo"
-date: "2025-09-15"
+date: "2025-12-05"
 description: "Solving the Agent Autonomy Trilemma with Threshold Cryptography"
 tags: ["agentic-ai", "cryptography", "infrastructure", "research", "solana"]
 category: "Research"
@@ -15,7 +15,9 @@ AI agents need to spend money autonomously. Users need to retain custody of thei
 
 The **Agentic Intent Protocol** uses threshold cryptography to achieve both: agents sign transactions independently while no single party — including us — can access user funds. We call this **distributed non-custody**: the signing key exists, but only as encrypted shards across Lit Protocol's decentralized network. To sign, the backend must prove cryptographic conditions to distributed nodes that independently verify and release their shards. The key is reconstructed only in memory, signs once, then is discarded.
 
-The core insight: **autonomy doesn't require custody**. By separating key storage from key usage through threshold encryption, we achieve what was previously impossible—agents that can sign transactions independently while users maintain cryptographic control.
+**New in AIP v1.1**: We've moved from programmatic spending limits (database checks) to **cryptographically-enforced spending limits**. The signing key itself is bound to a Lit Action that *physically cannot* sign transactions that exceed spending limits. Even a fully compromised ZendFi backend cannot bypass these limits—the signing key is controlled by immutable code running in Trusted Execution Environments.
+
+The core insight: **autonomy doesn't require custody, and limits don't require trust**. By separating key storage from key usage through threshold encryption, and binding keys to immutable enforcement logic, we achieve what was previously impossible—agents that can sign transactions independently while users maintain cryptographic control over both funds AND spending limits.
 
 ---
 
@@ -38,6 +40,7 @@ Traditional approaches sacrifice one:
 | **OAuth/API tokens** | HIGH | LIMITED | NONE | Coarse permissions |
 | **AIP (Interactive)** | LIMITED | MAXIMUM | HIGH | Device-bound, user signs |
 | **AIP (Autonomous)** | HIGH | HIGH | HIGH* | Threshold cryptography |
+| **AIP (Crypto-Enforced)** | HIGH | MAXIMUM | HIGH* | PKP + Lit Actions |
 
 *= Distributed non-custody (requires compromising TWO independent systems)
 
@@ -49,8 +52,9 @@ The Agentic Intent Protocol achieves all three through threshold cryptography.
 
 ### How It Works
 
-Instead of storing the signing key in one place (custodial) or requiring the user to sign each transaction (non-autonomous), we use **Lit Protocol's threshold encryption network**:
+Instead of storing the signing key in one place (custodial) or requiring the user to sign each transaction (non-autonomous), we use **Lit Protocol's threshold cryptography network** in two ways:
 
+**For Autonomous Mode (threshold decryption):**
 1. **Client generates** a Solana keypair on the user's device
 2. **Client encrypts** the keypair using Lit Protocol's threshold encryption
 3. **Encrypted shards** are distributed across Lit's decentralized node network
@@ -58,14 +62,24 @@ Instead of storing the signing key in one place (custodial) or requiring the use
 5. **Lit nodes independently verify** conditions and release their shards
 6. **Key is reconstructed** only in memory, signs the transaction, then is discarded
 
+**For Crypto-Enforced Mode (PKP + Lit Actions):** 🆕
+1. **Backend mints a PKP** (Programmable Key Pair) on Lit's Chronicle chain
+2. **PKP is bound** to a specific Lit Action IPFS CID—only this code can use the key
+3. **Agent requests signing** via the Lit Action
+4. **Lit Action checks spending limits** by calling ZendFi's API from inside TEEs
+5. **If limit allows**: Action signs with PKP. **If exceeded or error**: Action refuses
+6. **Key never leaves** Lit's secure enclaves—signing happens inside TEEs
+
 ### Why Lit Protocol?
 
 Lit Protocol is the only production-ready threshold cryptography network that meets our requirements:
 
 - **Decentralized operators**: 100+ nodes run by independent operators, not controlled by any single entity
-- **Programmable conditions**: EVM-based access control lets us specify when decryption is allowed
+- **Programmable conditions**: EVM-based access control and Lit Actions for custom logic
+- **Lit Actions**: JavaScript code running in TEEs with HTTP fetch capability 🆕
+- **PKPs**: Programmable Key Pairs that can be bound to specific Lit Actions 🆕
 - **Multi-chain native**: Built-in support for Solana, Ethereum, and other chains
-- **Production-ready**: Active mainnet since 2023 with battle-tested cryptographic primitives
+- **Production-ready**: Active mainnet (Datil) with battle-tested cryptographic primitives
 
 Building our own threshold network would require years of cryptographic engineering and wouldn't achieve the same trust properties—we'd just be another single point of failure.
 
@@ -75,19 +89,21 @@ Building our own threshold network would require years of cryptographic engineer
 
 | Property | How We Achieve It |
 |----------|-------------------|
-| **Autonomy** | Backend can request decryption and sign without user interaction |
-| **Security** | Programmatic spending checks + delegation signature requirement |
+| **Autonomy** | PKP can sign transactions without user interaction via Lit Actions |
+| **Security** | Cryptographically-enforced spending limits via immutable Lit Action code |
 | **Non-Custody** | No single party holds the key—threshold requires distributed consensus |
 
 ### What "Non-Custody" Means Here
 
 Let's be precise. ZendFi's backend:
-- **CAN** request decryption from Lit Protocol
-- **CAN** sign transactions once the key is reconstructed
+- **CAN** request signatures from Lit Protocol
+- **CANNOT** sign transactions that exceed limits—the Lit Action refuses
 - **CANNOT** decrypt the key alone—requires Lit node consensus
-- **CANNOT** access the key if Lit nodes reject the conditions
+- **CANNOT** modify the spending limit logic—it's immutable on IPFS
 
 This is **distributed non-custody**: the backend has signing capability but not unilateral key access. If ZendFi's servers were seized, attackers would obtain only encrypted blobs. If Lit Protocol's network were compromised, attackers would need to also compromise ZendFi's backend. Both would need to be compromised simultaneously.
+
+**With cryptographic enforcement** (new in v2): Even if both systems were compromised, the Lit Action code running in TEEs would STILL refuse to sign transactions exceeding limits—the enforcement logic is immutable and stored on IPFS.
 
 ---
 
@@ -107,9 +123,9 @@ The user declares their spending intent once. The agent operates autonomously wi
 
 ---
 
-## Two Trust Models, One Protocol
+## Three Trust Models, One Protocol
 
-The Agentic Intent Protocol offers two operating modes depending on how much autonomy the user grants:
+The Agentic Intent Protocol offers three operating modes depending on how much autonomy the user grants:
 
 ### Interactive Mode (Maximum Security)
 
@@ -128,7 +144,7 @@ Use case:     High-value transactions, security-conscious users
 
 This is **pure non-custody**, even a fully compromised ZendFi cannot access user funds.
 
-### Autonomous Mode (Maximum Autonomy)
+### Autonomous Mode (High Autonomy)
 
 User upgrades their session key to enable **autonomous delegation** by:
 1. Signing a delegation message (proves key possession)
@@ -152,6 +168,60 @@ Use case:     AI agents, recurring payments, autonomous operations
 - Spending limits (`max_amount_usd`, `used_amount_usd`)
 - Time bounds (`expires_at`)
 - Revocation status (`revoked_at`)
+
+### Crypto-Enforced Mode (Maximum Autonomy + Maximum Security) 🆕
+
+User creates a session with **cryptographically-enforced spending limits**. Instead of relying on database checks, the signing key itself is bound to a Lit Action that enforces limits.
+
+```
+Security:     ████████████ (Maximum - limits enforced cryptographically)
+Autonomy:     ████████████ (Maximum - fully autonomous)
+Use case:     AI agents requiring trustless guarantees
+```
+
+**What's cryptographically enforced:**
+- **Spending limits** - Lit Action checks limits before signing, refuses if exceeded
+- **Immutable logic** - Lit Action code stored on IPFS, hash locked at PKP creation
+- **TEE execution** - Lit nodes run in Trusted Execution Environments
+- **Fail-safe design** - Network errors = refuse to sign
+
+**How it works:**
+1. Session creation mints a PKP (Programmable Key Pair) on Lit Protocol
+2. PKP is bound to a specific Lit Action IPFS CID—only this code can use the key
+3. When signing, the Lit Action calls ZendFi API to check limits
+4. If API says "allowed: true" → sign transaction
+5. If API says "allowed: false" OR network error → **refuse to sign**
+
+```typescript
+// Creating a crypto-enforced session
+const session = await api.createSession({
+  agent_id: "shopping_agent",
+  user_wallet: "7xKXtg...",
+  crypto_enforced: true,  // Enable cryptographic enforcement
+  limits: {
+    max_per_day: 100,
+    max_per_transaction: 50
+  }
+});
+
+// Response includes PKP info
+// {
+//   session_id: "...",
+//   crypto_enforced: true,
+//   pkp_public_key: "0x04fab...",
+//   pkp_eth_address: "0xB9Cd...",
+//   lit_action_ipfs_cid: "QmXyz..."
+// }
+```
+
+**Why this is stronger than programmatic limits:**
+
+| Threat | Programmatic Limits | Crypto-Enforced Limits |
+|--------|--------------------|-----------------------|
+| Compromised ZendFi DB | Limits bypassed | ❌ Cannot sign—Lit Action refuses |
+| Compromised ZendFi Backend | Limits bypassed | ❌ Cannot sign—Lit Action refuses |
+| Malicious insider | Could modify limits | ❌ Action code is immutable on IPFS |
+| API returns false "allowed" | Could trick system | ❌ Fail-safe: errors = refuse to sign |
 
 ---
 
@@ -249,10 +319,69 @@ These guarantees hold even against a malicious ZendFi:
 | **Delegation requires key possession** | Ed25519 signature verification on delegation message |
 | **Autonomous keys require threshold consensus** | Lit Protocol nodes must independently verify conditions |
 | **Transactions require valid signatures** | Solana network rejects invalid Ed25519 signatures |
+| **Spending limits (crypto-enforced mode)** | Lit Action checks limits, refuses to sign if exceeded 🆕 |
+| **Limit logic is immutable** | Lit Action code stored on IPFS, hash locked at PKP creation 🆕 |
 
-### What's Programmatically Enforced
+### Crypto-Enforced Spending Limits Architecture 🆕
 
-These rely on ZendFi's backend behaving correctly:
+When `crypto_enforced: true` is set on a session:
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│              Cryptographic Spending Limits with Lit Actions             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  1. Session Creation                                                    │
+│     ┌──────────────┐                                                    │
+│     │ ZendFi API   │──► Mint PKP bound to spending limit Lit Action     │
+│     │              │    • PKP can ONLY execute our immutable Action     │
+│     │              │    • Action code stored on IPFS (tamper-proof)     │
+│     └──────────────┘                                                    │
+│                                                                         │
+│  2. Payment Request                                                     │
+│     ┌──────────────┐                                                    │
+│     │ SDK/Agent    │──► Request signature via Lit Action                │
+│     └──────────────┘                                                    │
+│            │                                                            │
+│            ▼                                                            │
+│     ┌──────────────┐                                                    │
+│     │ Lit Action   │──► 1. Call ZendFi API to check spending limit      │
+│     │ (in TEE)     │    2. If limit OK: sign transaction with PKP      │
+│     │              │    3. If exceeded: REFUSE to sign                  │
+│     └──────────────┘                                                    │
+│                                                                         │
+│  Why This Is Secure:                                                    │
+│  • PKP private key NEVER leaves Lit's secure enclaves                   │
+│  • Lit Action code is immutable (IPFS hash locked at PKP mint)          │
+│  • Even ZendFi cannot sign without the Action's approval                │
+│  • Fail-safe: network errors = refuse to sign                           │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+The Lit Action code running inside TEEs:
+
+```javascript
+// Simplified Lit Action logic (actual code on IPFS)
+const spendingCheck = await fetch(apiEndpoint + '/check-spending', {
+  method: 'POST',
+  body: JSON.stringify({ session_id, amount_usd })
+});
+
+const result = await spendingCheck.json();
+
+if (!result.allowed) {
+  // CRYPTOGRAPHIC REFUSAL - cannot be bypassed
+  return { success: false, error: 'LIMIT_EXCEEDED' };
+}
+
+// Only signs if limit check passed
+const signature = await Lit.Actions.signEcdsa({ toSign: txBytes });
+```
+
+### What's Programmatically Enforced (Legacy Mode)
+
+These rely on ZendFi's backend behaving correctly (when `crypto_enforced: false`):
 
 | Check | Implementation |
 |-------|----------------|
@@ -265,25 +394,36 @@ These rely on ZendFi's backend behaving correctly:
 
 ### Threat Scenarios
 
-**If ZendFi's backend is compromised**, device-bound keys remain safe since an attacker would only obtain ciphertext they cannot decrypt. Lit-delegated keys are also protected because the attacker would still need to achieve consensus from Lit Protocol's distributed nodes. However, programmatic limits (spending caps, time bounds) would be at risk since an attacker with database access could bypass these checks.
+**If ZendFi's backend is compromised:**
+- Device-bound keys: ✅ Safe (ciphertext only)
+- Autonomous mode: ⚠️ Limits could be bypassed (programmatic checks)
+- **Crypto-enforced mode: ✅ Safe** - Lit Action still refuses to sign over limit 🆕
 
-**If Lit Protocol's network is compromised**, device-bound keys remain completely safe since Lit is not involved in their encryption. Lit-delegated keys would be at risk, but an attacker would still need simultaneous access to ZendFi's backend to actually use them.
+**If Lit Protocol's network is compromised:**
+- Device-bound keys: ✅ Safe (Lit not involved)
+- Autonomous mode: ⚠️ Keys at risk (need both Lit AND ZendFi)
+- **Crypto-enforced mode: ⚠️** At risk, but attacker still needs ZendFi backend 🆕
 
-**If both ZendFi and Lit Protocol are compromised simultaneously**, device-bound keys still remain safe—neither system can decrypt them since only the user's password can. Lit-delegated keys, however, would be fully at risk in this scenario, as the attacker would have access to both systems required for decryption.
+**If both ZendFi AND Lit are compromised:**
+- Device-bound keys: ✅ Safe (only user's password can decrypt)
+- Autonomous mode: ❌ At risk
+- **Crypto-enforced mode: ❌** At risk (both systems needed for signing) 🆕
 
-**If a user's device is compromised**, all keys associated with that device are at risk regardless of mode, since the attacker would have access to both the encrypted key material and the ability to capture the user's password.
+**If a user's device is compromised:**
+- All modes: ❌ At risk (attacker has encrypted key + can capture password)
 
-The key insight: **Autonomous delegation requires compromising TWO independent systems**. This is strictly better than custodial (one system) while enabling full autonomy.
+The key insight: **Crypto-enforced mode upgrades "programmatic limits" to "cryptographic limits"**. Even a fully compromised ZendFi cannot exceed spending limits—the Lit Action running in TEEs will refuse.
 
 ### Compared to Traditional Custody
 
-| Attack Surface | Traditional Custody | AIP Distributed Custody |
-|----------------|--------------------|-----------------------|
-| Points of failure | 1 (provider backend) | 2 (backend AND Lit network) |
-| Required compromises | Provider database | Backend + threshold of Lit nodes |
-| Insider threat | Full access to keys | Cannot access without Lit consensus |
-| Regulatory seizure | Keys can be seized | Keys don't exist in one place |
-| Recovery if provider disappears | Funds lost | User has device-bound backup |
+| Attack Surface | Traditional Custody | AIP Distributed Custody | AIP Crypto-Enforced |
+|----------------|--------------------|-----------------------|---------------------|
+| Points of failure | 1 (provider backend) | 2 (backend AND Lit network) | 2 (backend AND Lit) |
+| Spending limit enforcement | Database check | Database check | **Cryptographic** |
+| Required compromises | Provider database | Backend + threshold of Lit nodes | Backend + Lit + bypass TEE |
+| Insider threat | Full access to keys | Cannot access without Lit consensus | **Cannot exceed limits** |
+| Regulatory seizure | Keys can be seized | Keys don't exist in one place | Keys don't exist in one place |
+| Recovery if provider disappears | Funds lost | User has device-bound backup | User has device-bound backup |
 
 ---
 
@@ -313,11 +453,15 @@ Keys are stored with dual hashing:
 
 ### Agent Sessions
 
-Sessions provide server-side spending tracking:
+Sessions provide spending tracking and optional cryptographic enforcement:
 
 ```json
 {
   "session_token": "zai_session_...",
+  "crypto_enforced": true,
+  "pkp_public_key": "0x04fab...",
+  "pkp_eth_address": "0xB9Cd...",
+  "lit_action_ipfs_cid": "QmXyz...",
   "limits": {
     "max_per_transaction": 500,
     "max_per_day": 2000,
@@ -331,7 +475,9 @@ Sessions provide server-side spending tracking:
 }
 ```
 
-These limits are **programmatic**—the backend checks them before processing payments. They provide defense-in-depth but are not cryptographic guarantees.
+When `crypto_enforced: false` (legacy): Limits are **programmatic**—the backend checks them before processing payments. They provide defense-in-depth but are not cryptographic guarantees.
+
+When `crypto_enforced: true` (recommended): Limits are **cryptographic**—the Lit Action running in TEEs checks them before signing. Even a compromised backend cannot exceed these limits.
 
 ---
 
@@ -342,7 +488,7 @@ These limits are **programmatic**—the backend checks them before processing pa
 The Smart Payment endpoint handles all complexity:
 
 ```bash
-curl -X POST https://api.zendfi.com/api/v1/ai/smart-payment \
+curl -X POST https://api.zendfi.tech/api/v1/ai/smart-payment \
   -H "Authorization: Bearer zai_..." \
   -H "X-Session-Key-Id: {session_key_uuid}" \
   -d '{
@@ -384,14 +530,14 @@ For complex checkout flows:
 
 ```bash
 # 1. Create intent
-curl -X POST https://api.zendfi.com/api/v1/payment-intents \
+curl -X POST https://api.zendfi.tech/api/v1/payment-intents \
   -d '{"amount": 49.99, "agent_id": "checkout_agent"}'
 
 # Response includes client_secret for frontend confirmation
 {"id": "...", "client_secret": "pi_xxx_secret_yyy", "status": "requires_payment"}
 
 # 2. Confirm with client_secret (can be done from frontend)
-curl -X POST https://api.zendfi.com/api/v1/payment-intents/{id}/confirm \
+curl -X POST https://api.zendfi.tech/api/v1/payment-intents/{id}/confirm \
   -d '{"client_secret": "pi_xxx_secret_yyy", "customer_wallet": "..."}'
 ```
 
@@ -402,7 +548,7 @@ curl -X POST https://api.zendfi.com/api/v1/payment-intents/{id}/confirm \
 Agents can request intelligent pricing adjusted for purchasing power:
 
 ```bash
-curl -X POST https://api.zendfi.com/api/v1/ai/pricing/suggest \
+curl -X POST https://api.zendfi.tech/api/v1/ai/pricing/suggest \
   -d '{
     "base_price": 29.99,
     "user_profile": {"location_country": "IN"},
@@ -435,7 +581,7 @@ PPP factors are sourced from World Bank data for 27 countries.
 Every payment records which agent initiated it:
 
 ```bash
-curl https://api.zendfi.com/api/v1/analytics/agents?period_days=30
+curl https://api.zendfi.tech/api/v1/analytics/agents?period_days=30
 ```
 
 ```json
@@ -463,12 +609,13 @@ curl https://api.zendfi.com/api/v1/analytics/agents?period_days=30
 | Endpoint | Purpose |
 |----------|---------|
 | `POST /api/v1/agent-keys` | Create scoped agent API key |
-| `POST /api/v1/ai/sessions` | Create spending session |
+| `POST /api/v1/ai/sessions` | Create spending session (supports `crypto_enforced: true`) |
 | `POST /api/v1/ai/session-keys/device-bound/create` | Create device-bound key |
 | `POST /api/v1/ai/session-keys/{id}/enable-autonomy` | Enable autonomous delegation |
 | `POST /api/v1/ai/smart-payment` | Execute payment (auto-selects signing method) |
 | `POST /api/v1/payment-intents` | Create payment intent |
 | `POST /api/v1/ai/pricing/suggest` | Get PPP-adjusted price |
+| `POST /api/v1/internal/sessions/check-spending` | Internal endpoint for Lit Actions 🆕 |
 
 ---
 
@@ -478,9 +625,11 @@ The Agentic Intent Protocol demonstrates that the agent autonomy trilemma is not
 
 1. **Agents can sign transactions autonomously** (no human in the loop)
 2. **Users retain cryptographic control** (no single-party custody)
-3. **Spending is bounded** (programmatic limits + time bounds + revocation)
+3. **Spending is bounded** — and now **cryptographically enforced** via Lit Actions
 
-The key architectural insight is **separating key storage from key usage**. The signing key exists, but it's distributed across Lit Protocol's network. ZendFi can request its assembly for signing, but cannot extract it unilaterally. This is distributed non-custody—a new trust model between full custody and pure self-custody.
+The key architectural insight is **separating key storage from key usage**. The signing key exists, but it's distributed across Lit Protocol's network. ZendFi can request signing through Lit Actions, but cannot extract the key or bypass the spending limits—the enforcement logic is immutable and runs in Trusted Execution Environments.
+
+With cryptographic spending limits (v2), we've moved from "trust us to check the database" to "the key physically cannot sign transactions exceeding limits." This is a fundamental shift from programmatic to cryptographic enforcement.
 
 ### What We Built vs. What We Didn't
 
@@ -488,30 +637,35 @@ The key architectural insight is **separating key storage from key usage**. The 
 - Device-bound session keys with client-side encryption
 - Lit Protocol integration for autonomous delegation via threshold encryption
 - Ed25519 delegation signatures for authorization
-- Programmatic spending limits and session management
+- **Cryptographically-enforced spending limits via Lit Actions (PKP + IPFS)** 🆕
+- **PKP minting on Lit's Chronicle chain** 🆕
+- Programmatic spending limits (legacy mode, defense-in-depth)
 - Gasless transaction infrastructure
 - PPP pricing engine
 
 **We did not build:**
-- On-chain spending limits (limits are database checks, not smart contract enforced)
+- ~~On-chain spending limits~~ → **Solved with Lit Actions** (better than on-chain: no gas, cross-chain)
 - Trustless revocation (revocation requires trusting ZendFi's backend)
 - Multi-party approval workflows (single user authorizes)
 
 ### Future Work
 
-- **On-chain limits**: Move spending caps to Solana programs for trustless enforcement
-- **Multi-chain**: Extend to EVM chains via Lit Protocol's existing support
+- **Trustless revocation**: Move revocation to on-chain or Lit access conditions
+- **Multi-chain PKPs**: Extend crypto-enforced limits to EVM chains
 - **Agent reputation**: On-chain history enabling trust scores
-- **Programmable conditions**: Let users specify custom Lit access control conditions
+- **Custom Lit conditions**: Let users specify custom access control logic
+- **Time-locked limits**: Cryptographically enforce time bounds (not just spending)
 
 ---
 
 ## References
 
 1. Lit Protocol. "Threshold Cryptography for Web3." https://litprotocol.com
-2. Solana Foundation. "Solana Documentation." https://docs.solana.com
-3. Circle. "USDC on Solana." https://developers.circle.com
-4. Biryukov, A., Dinu, D., & Khovratovich, D. "Argon2: Memory-Hard Function." RFC 9106.
+2. Lit Protocol. "Lit Actions." https://developer.litprotocol.com/sdk/serverless-signing/overview
+3. Lit Protocol. "PKPs (Programmable Key Pairs)." https://developer.litprotocol.com/user-wallets/pkps/overview
+4. Solana Foundation. "Solana Documentation." https://docs.solana.com
+5. Circle. "USDC on Solana." https://developers.circle.com
+6. Biryukov, A., Dinu, D., & Khovratovich, D. "Argon2: Memory-Hard Function." RFC 9106.
 
 ---
 
