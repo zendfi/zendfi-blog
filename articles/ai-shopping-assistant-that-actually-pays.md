@@ -414,7 +414,7 @@ Clone it, run it, break it, ship it. That's how we learn.
 - **Agentic Intent Protocol**: [Read our research paper](/article/agentic-intent-protocol)
 - **Non-Custodial Architecture**: [How we designed it](/article/non-custodial-by-design)
 
-Questions? Find us on [Twitter](https://twitter.com/zendfiHQ) or [Discord](https://discord.gg/zendfi).
+Questions? Find us on [Twitter](https://twitter.com/zendfi_) or [Discord](https://discord.gg/3QJnnwuXSs).
 
 ---
 

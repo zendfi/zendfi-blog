@@ -677,4 +677,4 @@ Use what helps. Ignore what doesn't. Build great products faster.
 
 ---
 
-*Questions? Join our [Discord](https://discord.gg/zendfi) or email dev@zendfi.tech*
+*Questions? Join our [Discord](https://discord.gg/3QJnnwuXSs) or email dev@zendfi.tech*

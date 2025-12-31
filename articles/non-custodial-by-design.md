@@ -249,4 +249,4 @@ Spoiler: you can't. And neither can we.
 - [ZendFi API Docs](/docs/AGENTIC_API_DOCUMENTATION.md) - Full API reference
 
 
-*Have questions about our security architecture? Reach out at security@zendfi.tech or join our [Discord](https://discord.gg/zendfi).*
+*Have questions about our security architecture? Reach out at security@zendfi.tech or join our [Discord](https://discord.gg/3QJnnwuXSs).*

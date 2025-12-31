@@ -996,4 +996,4 @@ We're excited to see what you build with it.
 
 *Want to try it? Get your API key at [dashboard.zendfi.tech](https://dashboard.zendfi.tech)*
 
-*Questions? Email us at [support@zendfi.tech](mailto:support@zendfi.tech) or join our [Discord](https://discord.gg/zendfi)*
+*Questions? Email us at [support@zendfi.tech](mailto:support@zendfi.tech) or join our [Discord](https://discord.gg/3QJnnwuXSs)*

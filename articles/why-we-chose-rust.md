@@ -70,22 +70,7 @@ fn process_request(input: &[u8]) -> Result<Response> {
 }
 ```
 
-In production, our P99 latency is under 50ms. We've never had a GC pause spike. Our memory usage is predictable and flat:
-
-```
-Memory Usage Over Time:
-────────────────────────────────────────────────────
-│                                                  │
-│ ────────────────────────────────────────         │ 256MB (stable)
-│                                                  │
-│                                                  │
-│                                                  │
-│                                                  │
-└──────────────────────────────────────────────────
-    0h            12h            24h
-```
-
-No sawtooth pattern. No sudden spikes. Just consistent performance.
+In production, our P99 latency is under 50ms. We've never had a GC pause spike. Our memory usage is predictable and flat! No sawtooth pattern. No sudden spikes. Just consistent performance.
 
 ---
 
