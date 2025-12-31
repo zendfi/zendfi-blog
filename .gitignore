@@ -20,6 +20,9 @@
 # production
 /build
 
+# marketing
+/marketing/
+
 # misc
 .DS_Store
 *.pem
