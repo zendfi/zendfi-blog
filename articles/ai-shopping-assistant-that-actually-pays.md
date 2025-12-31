@@ -5,7 +5,7 @@ date: "2025-12-31"
 description: "How to give your AI agent a wallet, spending limits, and the ability to purchase autonomously—without holding their private keys"
 tags: ["agentic-ai", "session-keys", "payments", "solana", "tutorial"]
 category: "Dev Knowledge"
-image: "/images/ai-agent-autonomous-payment.png"
+image: ""
 ---
 
 ## The Dream vs. The Reality
