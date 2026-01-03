@@ -1,7 +1,7 @@
 ---
 title: "Building Non-Custodial AI Payment Agents on Solana"
 author: "Blessed Tosin-Oyinbo"
-date: "2025-12-05"
+date: "2026-01-04"
 description: "Technical Deep-Dive into the Agentic Intent Protocol"
 tags: ["agentic-ai", "cryptography", "infrastructure", "research", "solana"]
 category: "Research"
