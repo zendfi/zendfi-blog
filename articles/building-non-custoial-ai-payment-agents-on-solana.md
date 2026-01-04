@@ -46,7 +46,7 @@ The architecture we're sharing wouldn't work on Ethereum mainnet or most L2s—t
 
 The core insight here is that we **split key custody from spending authority.**
 
-![Agentic Intent Protocol](/images/ai-agent-payment-process.png)
+![Agentic Intent Protocol](/images/building-agentic-payments.png)
 
 ## How It Actually Works (In Practice)
 
