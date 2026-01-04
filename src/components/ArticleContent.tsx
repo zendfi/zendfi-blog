@@ -35,7 +35,7 @@ export default function ArticleContent({ article, slug }: ArticleContentProps) {
   const { theme } = useTheme();
 
   return (
-    <article className="py-6 sm:py-12 w-full max-w-[70rem] mx-auto overflow-hidden">
+    <article className="py-6 sm:py-12 w-full max-w-[70rem] mx-auto">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
