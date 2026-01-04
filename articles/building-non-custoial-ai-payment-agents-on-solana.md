@@ -44,50 +44,9 @@ The architecture we're sharing wouldn't work on Ethereum mainnet or most L2s—t
 
 ## The Architecture: Agentic Intent Protocol (AIP)
 
-The core insight here is that we **Split key custody from spending authority.**
+The core insight here is that we **split key custody from spending authority.**
 
-```mermaid
-graph TB
-    subgraph "Phase 1: CLIENT (User's Browser/Device)"
-        A1[Generate Solana keypair Ed25519] --> A2[Encrypt with PIN<br/>Argon2id + AES-256-GCM]
-        A2 --> A3[Encrypt AGAIN with Lit Protocol<br/>BLS threshold encryption]
-        A3 --> A4[Send encrypted blobs to backend]
-    end
-    
-    subgraph "Phase 2: BACKEND (API Server)"
-        A4 --> B1[Store device-bound blob<br/>can't decrypt without PIN]
-        B1 --> B2[Store Lit-encrypted blob<br/>can't decrypt without capacity delegation]
-        B2 --> B3[Create autonomous delegate record]
-    end
-    
-    subgraph "Phase 3: AUTONOMOUS PAYMENT FLOW"
-        C1[AI agent requests payment] --> C2[Backend checks spending limits]
-        C2 --> C3[Backend requests decryption from Lit Network]
-        C3 --> C4[Lit nodes verify conditions<br/>EVM contract call: balanceOf]
-        C4 --> C5[Lit nodes return BLS signature shares]
-        C5 --> C6[Backend combines shares<br/>→ decrypt keypair]
-        C6 --> C7[Backend signs Solana transaction]
-        C7 --> C8[✨ Transaction confirmed in ~400ms ✨]
-    end
-    
-    B3 -.-> C1
-    
-    style A1 fill:#e1f5ff
-    style A2 fill:#e1f5ff
-    style A3 fill:#e1f5ff
-    style A4 fill:#e1f5ff
-    style B1 fill:#fff4e1
-    style B2 fill:#fff4e1
-    style B3 fill:#fff4e1
-    style C1 fill:#e8f5e9
-    style C2 fill:#e8f5e9
-    style C3 fill:#e8f5e9
-    style C4 fill:#e8f5e9
-    style C5 fill:#e8f5e9
-    style C6 fill:#e8f5e9
-    style C7 fill:#e8f5e9
-    style C8 fill:#c8e6c9,stroke:#4caf50,stroke-width:3px
-```
+![Agentic Intent Protocol](/images/ai-agent-payment-process.png)
 
 ## How It Actually Works (In Practice)
 
@@ -313,7 +272,7 @@ await buyerAgent.purchaseTokens(250); // Need 250 GPT-4 tokens
 // What happens under the hood (fully autonomous):
 
 // Step A: Discover provider in agent registry
-// → Finds: "Demo GPT-4 Provider" offering tokens at $0.01 each
+//  Finds: "Demo GPT-4 Provider" offering tokens at $0.01 each
 agentStore.addLog({ message: 'Found provider: Demo GPT-4 Provider' });
 
 // Step B: Send service request (off-chain, agent-to-agent)
@@ -324,7 +283,7 @@ await buyerAgent.sendMessage({
 });
 
 // Step C: Receive quote from seller (off-chain)
-// → Quote: $2.50 for 250 tokens, delivery in 5 minutes
+//  Quote: $2.50 for 250 tokens, delivery in 5 minutes
 await buyerAgent.handleMessage({
   type: 'quote',
   payload: { price: 2.50, quantity: 250, delivery_time_minutes: 5 }
