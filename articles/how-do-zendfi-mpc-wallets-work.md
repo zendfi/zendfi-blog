@@ -1,7 +1,7 @@
 ---
 title: "ZendFi MPC Wallet — How It Actually Works"
 author: "Blessed Tosin-Oyinbo"
-date: "2025-12-31"
+date: "2026-03-08"
 description: "In this artcile, we'd learn how exactly ZendFi's MPC wallets work"
 tags: ["crytography", "wallet", "security", "solana"]
 category: "FAQ"
