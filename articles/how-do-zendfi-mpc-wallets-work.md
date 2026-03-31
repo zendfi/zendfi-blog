@@ -1,5 +1,5 @@
 ---
-title: "ZendFi MPC Wallet — How It Actually Works"
+title: "How Do ZendFi's MPC Wallets Work?"
 author: "Blessed Tosin-Oyinbo"
 date: "2026-03-08"
 description: "In this artcile, we'd learn how exactly ZendFi's MPC wallets work"
