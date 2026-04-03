@@ -249,7 +249,7 @@ export default function SearchModalProvider({
       <main className="flex-1 w-full max-w-[70rem] mx-auto px-4 sm:px-6">
         {/* Landing Section */}
         {isHome && (
-          <section className="py-6 sm:py-12">
+          <section className="py-6 sm:py-12 mt-32">
             <div className="max-w-3xl">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 text-foreground">
                 The ZendFi Journal

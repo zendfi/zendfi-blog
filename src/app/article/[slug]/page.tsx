@@ -51,8 +51,19 @@ export default async function ArticlePage({ params }: PageProps) {
     notFound()
   }
 
+  // Fetch all articles to populate the "Read this next" section
+  const allArticles = getAllArticles()
+  
+  // Filter out the current article, and grab the most recent 2
+  const relatedArticles = allArticles
+    .filter((a) => a.slug !== slug)
+    .slice(0, 2)
+
   return (
-    <ArticleContent article={article} slug={slug} />
+    <ArticleContent 
+      article={article} 
+      relatedArticles={relatedArticles} // Pass the new data down
+    />
   )
 }
 
