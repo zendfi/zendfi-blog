@@ -85,6 +85,27 @@ export const zendfi = new ZendFiClient({
 });
 ```
 
+### Configure Merchant TTL Policy (Recommended Early Step)
+
+Before minting signing grants, automation tokens, or child delegation tokens, set merchant TTL ceilings explicitly.
+
+```ts
+await zendfi.updateSubAccountTtlPolicy({
+  signing_grant_max_ttl_seconds: 60 * 60 * 24 * 14,
+  automation_token_max_ttl_seconds: 60 * 60 * 24 * 14,
+  child_delegation_max_ttl_seconds: 60 * 60 * 24 * 3,
+});
+```
+
+CLI equivalent:
+
+```bash
+zendfi subaccounts ttl-policy-set \
+  --signing-grant-max-ttl 1209600 \
+  --automation-token-max-ttl 1209600 \
+  --child-delegation-max-ttl 259200
+```
+
 ---
 
 ## Use Case 1: Virtual Account Per User
