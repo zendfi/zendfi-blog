@@ -1,6 +1,6 @@
 ---
 title: "Build a Sub-Accounts App Starter (Copy-Paste API, SDK, and CLI)"
-author: "The ZendFi Team"
+author: "Blessed Tosin-Oyinbo"
 date: "2026-03-31"
 description: "A practical starter implementation you can paste into a Node backend to ship virtual accounts, savings, and agentic payment controls"
 tags: ["subaccounts", "tutorial", "api", "sdk", "cli", "agentic-payments"]

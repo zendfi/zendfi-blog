@@ -1,6 +1,6 @@
 ---
 title: "How to Build with ZendFi Sub-Accounts End-to-End (API, SDK, CLI)"
-author: "The ZendFi Team"
+author: "Blessed Tosin-Oyinbo"
 date: "2026-03-31"
 description: "A practical guide to building virtual accounts, savings flows, and agentic smart-wallet automations with ZendFi sub-accounts"
 tags: ["subaccounts", "sdk", "cli", "api", "agentic-payments", "solana"]
